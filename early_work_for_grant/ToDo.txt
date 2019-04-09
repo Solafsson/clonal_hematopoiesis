@@ -1,0 +1,14 @@
+
+1. Download cram files
+2. Convert crams to bams
+3. Do a liftover of the list of myeloid hotspots from Peter to get those in build HG38
+4. Use bam-readcount to count the alleles carrying each mutation
+    https://github.com/genome/bam-readcount
+    /software/hgi/pkglocal/bam-readcount-0.8.0/bin/bam-readcount
+5. Do this for a randomly selected group of 1000 cases and 1000 controls if it is too much to do for everyone.
+
+
+Blabla.
+
+
+
