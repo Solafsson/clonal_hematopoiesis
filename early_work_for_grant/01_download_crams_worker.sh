@@ -8,6 +8,8 @@ clusterOutput=$5
 referenceFile=$6
 jobIndex=$7
 
+## Testing git
+
 indexSamplePath=$( awk -v jI="$jobIndex" 'NR==jI {print $2; exit}' < ${jobFile} )
 indexSample=$( awk -v jI="$jobIndex" 'NR==jI {print $1; exit}' < ${jobFile} )
 indexEGANname=$( awk -v jI="$jobIndex" 'NR==jI {print $4; exit}' < ${jobFile} )
