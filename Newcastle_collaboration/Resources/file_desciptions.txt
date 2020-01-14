@@ -1,0 +1,18 @@
+"CHIP_hotspots_list.csv"
+
+Contains genomic locations and single nucleotide substitutions at gDNA level in the following format:
+chr:position_in_hg38:ref_allele:alt_allele:optional_ID
+The optional_ID column contains the gene name and the protein consequence of the mutation separated by an underscore. 
+The mutation list contains CHIP-associated SNVs identified by Acuna-Hidalgo et al, 2017 (both novel and known), Jaiswal et al., 2014, and the SNVs from the list of Myeloid hotspots provided by Peter Campbell. The indels indentified by the above-listed studies were not included in this file.
+
+
+"negative_control_sites.csv"
+
+Contains genomic locations and single nucleotide substitutions at gDNA level in the following format:
+chr:position_in_hg38:ref_allele:alt_allele:optional_ID
+The optional_ID column contains the gene name and the protein consequence of the mutation separated by an underscore. 
+The list contains synonymous mutations for CHIP driver genes DNMT3A, JAK2, and TET2, as well as housekeeping genes ACTB, GAPDH, and SDHA.
+gnomAD v3 was used to identify the allelic variants for the listed genes. 
+Only the SNVs that represented synonymous variants, passed gnomAD filters, did not have an assigned rsID, had a total allele count of 1, and allele count of 0 in non-finnish Europeans were included.
+
+
