@@ -1,0 +1,18 @@
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Running Shearwater
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/lustre/scratch119/casm/team154pc/em16/CHIP/shearwater
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+##Required files:
+baits_regions.bed    
+normal_bam_list.txt  
+sample_bam_list.txt
+shearwater_pipe_WithPredefinedBAMList_v120719.R
+wrapper_shearwaterML_multiplebams_v120719.R
+
+
+/software/R-3.4.0/bin/Rscript shearwater_pipe_WithPredefinedBAMList_v120719.R CHIP_120919 /lustre/scratch119/casm/team154pc/em16/CHIP/shearwater/sample_bam_list.txt /lustre/scratch119/casm/team154pc/em16/CHIP/shearwater/normal_bam_list.txt /lustre/scratch119/casm/team154pc/em16/CHIP/shearwater/baits_regions.bed
