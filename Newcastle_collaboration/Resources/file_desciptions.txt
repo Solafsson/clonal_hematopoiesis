@@ -1,5 +1,4 @@
 "CHIP_hotspots_list.csv"
-
 Contains genomic locations and single nucleotide substitutions at gDNA level in the following format:
 chr:position_in_hg38:ref_allele:alt_allele:optional_ID
 The optional_ID column contains the gene name and the protein consequence of the mutation separated by an underscore. 
@@ -7,7 +6,6 @@ The mutation list contains CHIP-associated SNVs identified by Acuna-Hidalgo et a
 
 
 "negative_control_sites.csv"
-
 Contains genomic locations and single nucleotide substitutions at gDNA level in the following format:
 chr:position_in_hg38:ref_allele:alt_allele:optional_ID
 The optional_ID column contains the gene name and the protein consequence of the mutation separated by an underscore. 
@@ -15,4 +13,15 @@ The list contains synonymous mutations for CHIP driver genes DNMT3A, JAK2, and T
 gnomAD v3 was used to identify the allelic variants for the listed genes. 
 Only the SNVs that represented synonymous variants, passed gnomAD filters, did not have an assigned rsID, had a total allele count of 1, and allele count of 0 in non-finnish Europeans were included.
 
+"SNV_site_list.txt"
+Combination of "CHIP_hotspots_list.csv" and "negative_control_sites.csv", used by bam-readcount.
+
+"combined_list_of_SNVs.csv"
+Combination of "CHIP_hotspots_list.csv" and "negative_control_sites.csv", with extra information such as ref allele, var allele, optional id (gene name and AA substitution), and whether SNV is CHIP driver or control, used in R for plotting results
+
+"snv_siteList_hg38.txt" 
+CHIP genes from Peter Campbell
+
+"Top20_CHIP_sites_Watson_et_al.csv"
+Top 20 CHIP sites from http://dx.doi.org/10.1101/569566.
 
