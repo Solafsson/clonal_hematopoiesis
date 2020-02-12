@@ -1,0 +1,18 @@
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Running Shearwater
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Run in /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/scripts
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+##Required info:
+1. Path to Rscript on farm5
+2. shearwater_pipe_WithPredefinedBAMList_v050220.R 
+3. analysis name
+4. bam_list_samples - tsv
+5. bam_list_normals - tsv
+6. list of regions captured - bed
+7. output dir
+
+
+/software/R-3.6.1/bin/Rscript shearwater_pipe_WithPredefinedBAMList_v050220.R CHIP_050220 /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/resources/bam_list_cases.txt /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/resources/bam_list_normals.txt /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/resources/GENCODE_v33_genes.bed /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/results/CHIP_050220
