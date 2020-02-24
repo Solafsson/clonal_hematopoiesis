@@ -16,3 +16,6 @@ Run in /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newca
 
 
 /software/R-3.6.1/bin/Rscript shearwater_pipe_WithPredefinedBAMList_v050220.R CHIP_050220 /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/resources/bam_list_cases.txt /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/resources/bam_list_normals.txt /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/resources/GENCODE_v33_genes.bed /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/results/CHIP_050220
+
+## for testing on first 100 lines
+/software/R-3.6.1/bin/Rscript shearwater_pipe_WithPredefinedBAMList_v050220.R CHIP_050220 /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/resources/bam_list_cases.txt /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/resources/bam_list_normals.txt /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/resources/GENCODE_v33_genes_100L.bed /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/results/CHIP_050220

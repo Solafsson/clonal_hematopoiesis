@@ -1,0 +1,22 @@
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Running Shearwater
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Run in /nfs/users/nfs_a/ar31/shearwater/shearwater_Interval
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+##Required info:
+1. Path to Rscript on farm5
+2. shearwater_pipe_WithPredefinedBAMList_v050220.R 
+3. analysis name
+4. bam_list_samples - paths to files
+5. bam_list_normals - paths to files
+6. list of regions captured - bed
+7. output dir
+
+# splitting the dataset in 2 and using each half as a case, then as control
+#group1 vs group2
+/software/R-3.6.1/bin/Rscript shearwater_pipe_WithPredefinedBAMList_v050220.R CHIP_050220 /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater_Interval/resources/bam_list_group1.txt /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater_Interval/resources/bam_list_group2.txt /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater_Interval/resources/CHIP_loci_shearwater.bed /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater_Interval/results/CHIP_050220
+
+#group2 vs group1
+/software/R-3.6.1/bin/Rscript shearwater_pipe_WithPredefinedBAMList_v050220.R CHIP_050220_2 /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater_Interval/resources/bam_list_group2.txt /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater_Interval/resources/bam_list_group1.txt /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater_Interval/resources/CHIP_loci_shearwater.bed /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater_Interval/results/CHIP_050220_2

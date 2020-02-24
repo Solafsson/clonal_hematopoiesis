@@ -1,5 +1,5 @@
 # RUN like this:
-# cd /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater
+# cd /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/scripts
 # nohup /software/R-3.6.1/bin/Rscript annotate_mutations.R >& annotate_mutations.log
 
 
@@ -68,15 +68,16 @@ library("deepSNV")
 library("data.table")
 library("ggplot2")
 library("stringr")
+#install.packages("dplyr", repos = "http://cran.r-project.org")
+library("dplyr") #added by ar31
 setwd("/lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/results")
 
 #MODIFY THE FOLLOWING DEPENDING ON THE EXPERIMENT!
-dataset_name <- "CHIP_120919" 
-baits_bed = "/lustre/scratch119/casm/team154pc/em16/CHIP/shearwater/baits_regions.bed"; #same bed used to run shearwater (used to calculate number of sites for  multiple hypothesis correction)
+dataset_name <- "CHIP_050220"
+baits_bed = "/lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/resources/GENCODE_v33_genes_100L.bed"; #same bed used to run shearwater (used to calculate number of sites for  multiple hypothesis correction)
 outdir = "Mutation_calls"; system(sprintf("mkdir %s",outdir));
-bams_path = "/lustre/scratch119/casm/team154pc/em16/CHIP/shearwater/BAM_files/"; #need linked folder containing all bam files 
-#sample_table = read.table("/lustre/scratch116/casm/cgp/users/fa8/Katerina/SCORT_katerina/tumour_samples.tsv", header=1, sep="\t", stringsAsFactors=F)
-sample_table = read.table("/lustre/scratch119/casm/team154pc/em16/CHIP/shearwater/sample_bam_list.txt", header=F, sep="\t", stringsAsFactors=F)
+bams_path = "/lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/results/bams"; #need linked folder containing all bam files
+sample_table = read.table("/lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/resources/bam_list_cases.txt", header=F, sep="\t", stringsAsFactors=F)
 if(colnames(sample_table)[1] != "sampleID") {
 	colnames(sample_table) <- c("sampleID")
 }
@@ -94,8 +95,8 @@ entry_end = pmin(entry_start+numsegments_per_job-1, length(baits))
 # a. Loading the table of putative mutations from each patient
 mutations = NULL
 for (h in 1:length(entry_start)) {
-	if(file.exists(sprintf("CHIP_120919/shearwater_temp_%s/mismatches_%s_%s.txt", dataset_name, entry_start[h], entry_end[h]))) {
-	    m = read.table(file=sprintf("CHIP_120919/shearwater_temp_%s/mismatches_%s_%s.txt", dataset_name, entry_start[h], entry_end[h]), header=1, sep="\t", stringsAsFactors=F)
+	if(file.exists(sprintf("CHIP_050220/shearwater_temp_%s/mismatches_%s_%s.txt", dataset_name, entry_start[h], entry_end[h]))) {
+	    m = read.table(file=sprintf("CHIP_050220/shearwater_temp_%s/mismatches_%s_%s.txt", dataset_name, entry_start[h], entry_end[h]), header=1, sep="\t", stringsAsFactors=F)
 	    mutations = rbind(mutations,m)
 	}
 }
@@ -112,6 +113,9 @@ L = sum(end(reduce(baits))-start(reduce(baits))+1) # Bait footprint
 s = unique(sample_table$sampleID) # List of samples
 
 mutations$vaf <- (mutations$xfw + mutations$xbw) / (mutations$xfw + mutations$xbw + mutations$nfw + mutations$nbw)
+
+#added by ar31 to remove duplicate rows in "mutations" data frame
+mutations = distinct(mutations)
 
 ####################################################################################################
 # fa8: Let's merge neighbor indels and check they have consistent VAFs
@@ -364,74 +368,72 @@ if (length(rmpos)>0) {
 write.table(mutations, file=sprintf("%s/mutations_q01_%s.annotruns.2.txt", outdir, dataset_name), col.names=T, row.names=F, sep="\t", quote=F)
 indels_f <- length(grep("[-I]",mutations[grep("OK",mutations$label),"mut"]));
 subs_f   <- nrow(mutations[grep("OK",mutations$label),])-indels_f;
-cat("#AFTER_NEARBY_INDELS\t",nrow(mutations),"\t",indels_f,"\t",subs_f,"\t",indels_f/(indels_f+subs_f),"\n",sep="");
+cat("#AFTER_NEARBY_INDELS\t",nrow(mutations),"\t",indels_f,"\t",subs_f,"\t",indels_f/(indels_f+subs_f),"\n",sep="")
 
 ############################################################################################################
 #Create vcf file and run vagrent
-
-mutations <- read.table(paste0("Mutation_calls/mutations_q01_", dataset_name,".annotruns.2.txt"), stringsAsFactors = F, header = T, sep = "\t")
-
-vcf_file = mutations[,c(2:5)]
-names(vcf_file) = c("#CHROM", "POS", "REF", "ALT")
-
-#Add the required null columns
-vcf_file$ID = vcf_file$QUAL = vcf_file$FILTER = vcf_file$INFO = "."
-
-#Rearrange into correct order
-vcf_file = vcf_file[,c(1,2,5,3,4,6,7,8)]
-
-#Write files
-write.table(vcf_file, sep = "\t", quote = FALSE, file = paste0(dataset_name,"_mutations_all.vcf"), row.names = FALSE)
-
-
-vcf_header_path = "/lustre/scratch119/casm/team154pc/em16/CHIP/shearwater/VCF_header_for_VaGrent.txt"
-vcf_path = paste0("/lustre/scratch119/casm/team154pc/em16/CHIP/shearwater/",dataset_name,"_mutations_all.vcf")
-vagrent_input_path = paste0("/lustre/scratch119/casm/team154pc/em16/CHIP/shearwater/",dataset_name, "_mutations_all_header.vcf")
-vagrent_output_path = paste0(vagrent_input_path,".annot")
- 
-#1. paste vcf file to a dummy header file
-system(paste0("cat ",vcf_header_path," ",vcf_path," > ", vagrent_input_path))
-#2. commands to run vagrent
-system(paste0("perl-5.16.3 -I /software/CGP/canpipe/live/lib/perl5 /software/CGP/canpipe/live/bin/AnnotateVcf.pl -i ",vagrent_input_path," -o ",vagrent_output_path," -sp Human -as NCBI37 -c /nfs/cancer_ref02/human/GRCh37d5/vagrent/e75/vagrent.cache.gz"))
-#3. import vagrent output
-vagrent_output = fread(vagrent_output_path,skip = "#CHROM")
-annot_info = as.data.frame(str_split(vagrent_output$INFO, pattern = ";",simplify = TRUE), stringsAsFactors = FALSE)
-colnames(annot_info) <- c("VT","VD","VC","VW")
- 
-annot_info$VC <- gsub(x=annot_info$VC, pattern = "VC=", replacement = "")
-annot_info$VT <- gsub(x=annot_info$VT, pattern = "VT=", replacement = "")
-annot_info$VW <- gsub(x=annot_info$VW, pattern = "VW=", replacement = "")
-annot_info$VD <- gsub(x=annot_info$VD, pattern = "VD=", replacement = "")
- 
- 
-#Attempt to functionalize neatly
-split_vagrent_output = function(df,split_col,col_IDs = c("Gene","Transcript","RNA","CDS","Protein","Type","SO_codes")) {
-  col = df[[split_col]]
-  output = matrix(nrow = nrow(df), ncol = length(col_IDs))
-  for(i in 1:length(col_IDs)) {
-    output[,i] = str_split(col, pattern = "\\|", simplify = TRUE)[,i]
-  }
-  colnames(output) = col_IDs
-  return(as.data.frame(output))
-}
-
-split_output  <- split_vagrent_output(df = annot_info,split_col = "VD")
- 
- write.table(split_output, file = paste0(dataset_name,"vagrent_output.txt"), sep = "\t", quote = FALSE)
-
-############################################################################################################
-#Merge shearwater and vagrent outputs
-
-
-
-############################################################################################################
-#Remove germline based on VAF
-#>0.44
-
-
-############################################################################################################
-
-
-
-
-
+# 
+# mutations <- read.table(paste0("Mutation_calls/mutations_q01_", dataset_name,".annotruns.2.txt"), stringsAsFactors = F, header = T, sep = "\t")
+# 
+# vcf_file = mutations[,c(2:5)]
+# names(vcf_file) = c("#CHROM", "POS", "REF", "ALT")
+# 
+# #Add the required null columns
+# vcf_file$ID = vcf_file$QUAL = vcf_file$FILTER = vcf_file$INFO = "."
+# 
+# #Rearrange into correct order
+# vcf_file = vcf_file[,c(1,2,5,3,4,6,7,8)]
+# 
+# #Write files
+# write.table(vcf_file, sep = "\t", quote = FALSE, file = paste0(dataset_name,"_mutations_all.vcf"), row.names = FALSE)
+# 
+# 
+# vcf_header_path = "/lustre/scratch119/casm/team154pc/em16/CHIP/shearwater/VCF_header_for_VaGrent.txt"
+# vcf_path = paste0("/lustre/scratch119/casm/team154pc/em16/CHIP/shearwater/",dataset_name,"_mutations_all.vcf")
+# vagrent_input_path = paste0("/lustre/scratch119/casm/team154pc/em16/CHIP/shearwater/",dataset_name, "_mutations_all_header.vcf")
+# vagrent_output_path = paste0(vagrent_input_path,".annot")
+#  
+# #1. paste vcf file to a dummy header file
+# system(paste0("cat ",vcf_header_path," ",vcf_path," > ", vagrent_input_path))
+# #2. commands to run vagrent
+# system(paste0("perl-5.16.3 -I /software/CGP/canpipe/live/lib/perl5 /software/CGP/canpipe/live/bin/AnnotateVcf.pl -i ",vagrent_input_path," -o ",vagrent_output_path," -sp Human -as NCBI37 -c /nfs/cancer_ref02/human/GRCh37d5/vagrent/e75/vagrent.cache.gz"))
+# #3. import vagrent output
+# vagrent_output = fread(vagrent_output_path,skip = "#CHROM")
+# annot_info = as.data.frame(str_split(vagrent_output$INFO, pattern = ";",simplify = TRUE), stringsAsFactors = FALSE)
+# colnames(annot_info) <- c("VT","VD","VC","VW")
+#  
+# annot_info$VC <- gsub(x=annot_info$VC, pattern = "VC=", replacement = "")
+# annot_info$VT <- gsub(x=annot_info$VT, pattern = "VT=", replacement = "")
+# annot_info$VW <- gsub(x=annot_info$VW, pattern = "VW=", replacement = "")
+# annot_info$VD <- gsub(x=annot_info$VD, pattern = "VD=", replacement = "")
+#  
+#  
+# #Attempt to functionalize neatly
+# split_vagrent_output = function(df,split_col,col_IDs = c("Gene","Transcript","RNA","CDS","Protein","Type","SO_codes")) {
+#   col = df[[split_col]]
+#   output = matrix(nrow = nrow(df), ncol = length(col_IDs))
+#   for(i in 1:length(col_IDs)) {
+#     output[,i] = str_split(col, pattern = "\\|", simplify = TRUE)[,i]
+#   }
+#   colnames(output) = col_IDs
+#   return(as.data.frame(output))
+# }
+# 
+# split_output  <- split_vagrent_output(df = annot_info,split_col = "VD")
+#  
+#  write.table(split_output, file = paste0(dataset_name,"vagrent_output.txt"), sep = "\t", quote = FALSE)
+# 
+# ############################################################################################################
+# #Merge shearwater and vagrent outputs
+# 
+# 
+# 
+# ############################################################################################################
+# #Remove germline based on VAF
+# #>0.44
+# 
+# 
+# ############################################################################################################
+# 
+# #location of perl lib and vagrent installation - ar31
+# #system(paste0("perl5.26.2 -I /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/anaconda_varcall_env/lib/perl5 /lustre/scratch119/humgen/projects/cnv_15x/clonal_hematopoiesis_ibd/newcastle_collaboration/shearwater/anaconda_varcall_env/bin/AnnotateVcf.pl -i ",vagrent_input_path," -o ",vagrent_output_path," -sp Human -as NCBI37 -c /nfs/cancer_ref02/human/GRCh37d5/vagrent/e75/vagrent.cache.gz"))

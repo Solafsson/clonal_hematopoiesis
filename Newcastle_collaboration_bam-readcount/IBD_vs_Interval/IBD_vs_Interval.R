@@ -1,4 +1,4 @@
-#Old IBD vs Old Interval and young IBD vs young Interval
+#young IBD vs young Interval
 
 library(reshape2)
 library(ggplot2)

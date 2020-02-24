@@ -1,2 +1,0 @@
-"CDS-canonical.bed"
-exome bed from https://github.com/AstraZeneca-NGS/reference_data/blob/master/hg38/bed/CDS-canonical.bed

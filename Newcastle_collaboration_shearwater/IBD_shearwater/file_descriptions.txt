@@ -1,4 +1,0 @@
-"GENCODE_v33_genes.bed"
-comprehensive gene annotation on the reference chromosomes only, downloaded from ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_33/gencode.v33.annotation.gtf.gz
-Processed with awk '{if($3=="gene"){OFS="\t"; print substr($1, 4, length($1)), $4, $5}}' gencode.gtf | sort -u | sort -n -k1,2 > mygenes.bed, then grep -v "^M" to remove mitochondrial genes and grep -v "^Y" to remove Y chromosome; then added chr prefix via sed -e 's/^/chr/'
-Used by shearwater as the list of regions captured (exome)

@@ -8,7 +8,7 @@ bedtools_dir="/software/hgi/installs/anaconda3/envs/team152/bin/bedtools"
 
 # -v flag in bedtools -  only report those entries in A that have no overlap in B
 
-${bedtools_dir} intersect -v -a "${working_dir}SNV_site_list.bed" -b "${working_dir}xgen_plus_spikein_b38_alt_affected.bed" > "${working_dir}unaffected_CHIP_sites_UKBB_and_CHIP.bed"
+${bedtools_dir} intersect -v -a "${working_dir}SNV_site_list.bed" -b "${working_dir}xgen_plus_spikein_b38_alt_affected.bed" | uniq > "${working_dir}unaffected_CHIP_sites_UKBB_and_CHIP.bed"
 
 exit $?
 
