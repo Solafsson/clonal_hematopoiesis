@@ -11,8 +11,9 @@ sampleName=$3
 # -q - minimum mapping quality of reads used for counting
 # -w - maximum number of warnings of each type to emit (set to avoid getting repeated "Couldn't find single-end mapping quality" WARNINGS)
 
-${bam_readcount_path} -b 30 -q 30 -w 1 -f ${referenceFile} -l ${siteList} ${bamFile} | \
-awk -v SAM="$sampleName" '$1~/chr.*/ {print SAM, $0}' > ${output_dir}${sampleName}_snv_results.txt
+${bam_readcount_path} -b 30 -q 30 -w 0 -f ${referenceFile} -l ${siteList} ${bamFile} | \
+awk -v SAM="$sampleName" '{print SAM, $0}' > ${output_dir}${sampleName}_snv_results.txt
+
 
 ## rm bam file
 #rm ${bamFile}

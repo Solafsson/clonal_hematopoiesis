@@ -9,20 +9,20 @@
 working_dir="/lustre/scratch114/projects/ukbb_team152/ar31/"
 
 # script dir on NFS
-script_dir="/nfs/users/nfs_a/ar31/UKBB_WES_scripts/"
+script_dir="/nfs/users/nfs_a/ar31/shearwater/shearwater_UKBB/"
 
 # output dir for bams and counts
-output_dir="${working_dir}results/"
+output_dir="${working_dir}bams/"
 
 # directory for -o and -e
-clusterOutput="${working_dir}clusterOutputFiles/"
+clusterOutput="${working_dir}clusterOutputFiles_shearwater/"
 
 # paths to software - in team152 anaconda environment
 samtools_path="/software/hgi/installs/anaconda3/envs/team152/bin/samtools" # version 1.9
 bam_readcount_path="/software/hgi/installs/anaconda3/envs/team152/bin/bam-readcount" # version 0.8
 
 # paths to cram files
-cram_fileList="${working_dir}resources/all_querried_crams.txt"
+cram_fileList="${working_dir}resources/UKBB_cram_list_shearwater.txt"
 
 #names of failed crams for re-running
 #cram_fileList="${working_dir}resources/failed_cram_files.txt"
@@ -35,5 +35,3 @@ convert_siteList="${working_dir}resources/CHIP_sites_UKBB_for_conversion.txt"
 
 # site list for bam-readcount and summarising results - exact location in hg38 (no chr notation for UKBB)
 siteList="${working_dir}resources/unaffected_CHIP_sites_UKBB_and_CHIP_no_chr.txt"
-
-

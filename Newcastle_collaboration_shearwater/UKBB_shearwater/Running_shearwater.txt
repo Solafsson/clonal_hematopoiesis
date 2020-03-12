@@ -1,0 +1,17 @@
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Running Shearwater
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Run in /nfs/users/nfs_a/ar31/shearwater/shearwater_Interval
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+##Required info:
+1. Path to Rscript on farm5
+2. shearwater_pipe_WithPredefinedBAMList_v050220.R 
+3. analysis name
+4. bam_list_samples - paths to files
+5. bam_list_normals - paths to files
+6. list of regions captured - bed
+7. output dir
+
+/software/R-3.6.1/bin/Rscript shearwater_pipe_WithPredefinedBAMList_v050220.R CHIP_050220 /lustre/scratch114/projects/ukbb_team152/ar31/resources/bam_list_cases.txt /lustre/scratch114/projects/ukbb_team152/ar31/resources/bam_list_normals.txt /lustre/scratch114/projects/ukbb_team152/ar31/resources/CHIP_sites_UKBB_for_conversion.txt /lustre/scratch114/projects/ukbb_team152/ar31/results/CHIP_050220/

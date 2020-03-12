@@ -24,10 +24,4 @@ ${samtools_path} view -b -M -T ${referenceFile} ${cramFile} -L ${convert_siteLis
 #indexing BAM
 ${samtools_path} index ${output_dir}${sampleName}.bam
 
-## calling count_reads script here so that runs in the same job as the cram2bam conversion
-echo "Counting the reads"
-echo "${script_dir}02_count_reads.sh ${referenceFile} ${output_dir}${sampleName}.bam ${sampleName}"
-
-${script_dir}02_count_reads.sh ${referenceFile} ${output_dir}${sampleName}.bam ${sampleName}
-
 exit $?
